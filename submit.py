@@ -85,10 +85,10 @@ def main():
         print("姓名: " + str(username))
         print("账户类型: " + str(accountType))
         print("每月免费10GB流量，已使用: " + str(dataLeft[0][0]))
-        print("每月免费10GB流量，剩余: " + str(dataLeft[1][0]))
+        print("\033[32m每月免费10GB流量，剩余: " + str(dataLeft[1][0]) + "\033[0m")
         print("下次免费流量重置日期: " + str(nextloopdate))
         print("充值流量已使用: " + str(dataLeft[2][0]))
-        print("充值流量剩余: " + str(dataLeft[3][0]))
+        print("\033[32m充值流量剩余: " + str(dataLeft[3][0]) + "\033[0m")
     
     conn.close()
 
