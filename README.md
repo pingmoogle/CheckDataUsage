@@ -8,3 +8,8 @@
 - 正则
 - requests
 - 一些编码问题
+
+## Usage
+1. pip install -r requirements.txt
+2. python learnjson.py
+3. python submit.py
