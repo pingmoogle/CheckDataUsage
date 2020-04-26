@@ -9,27 +9,34 @@ from urllib import parse
 import requests
 from PIL import Image
 
+rawdata = {}
 
 def checkID():
-    rawdata = {}
-    with open("rawdata.json", "r") as rd:
-        rawdata = json.load(rd)
-    conn = requests.Session()
-
-    ## Login
-    result = conn.post("https://xxcapp.xidian.edu.cn/uc/wap/login/check",
-                       data={"username": rawdata["userID"], "password": rawdata["userPSWD"]})
-    if result.status_code == 200:
-        logindata = {}
-        logindata = json.loads(result.text)
-        if logindata["m"] == "账号或密码错误":
-            print("Login Failed.\nWrong UserID or Password.\n")
-            sys.exit()
+    # with open("rawdata.json", "r") as rd:
+    #     rawdata = json.load(rd)
+    try:
+        conn = requests.Session()
+        ## Login
+        result = conn.post("https://xxcapp.xidian.edu.cn/uc/wap/login/check",
+                           data={"username": rawdata["userID"], "password": rawdata["userPSWD"]})
+        if result.status_code == 200:
+            logindata = {}
+            logindata = json.loads(result.text)
+            if logindata["m"] == "账号或密码错误":
+                print("Login Failed.\nWrong UserID or Password. Please try again.\n")
+                rawdata["userID"] = input("Your ID: ")
+                rawdata["userPSWD"] = input("Your password: ")
+                # sys.exit()
+            else:
+                pass
         else:
-            pass
-    else:
-        print("Internet Connection Failed.")
-        sys.exit()
+            print("Internet Connection Failed.")
+            sys.exit()
+    except requests.exceptions.ConnectionError:
+        print("No Network. Please check your network connection.")
+        sys.exit("Internet Connect Filed.")
+    except json.decoder.JSONDecodeError:
+        print("Server Error.\nPlease try again later.")
 
 
 def showimage(URL):
@@ -43,9 +50,13 @@ def showimage(URL):
 
 
 def main():
-    rawdata = {}
-    with open("rawdata.json", "r") as rd:
-        rawdata = json.load(rd)
+
+    # with open("rawdata.json", "r") as rd:
+    #     rawdata = json.load(rd)
+
+    rawdata["userID"] = input("Your ID: ")
+    rawdata["userPSWD"] = input("Your password: ")
+
     useHeader = {
         "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko)"
                       " Chrome/80.0.3987.149 Mobile Safari/537.36"
@@ -86,7 +97,7 @@ def main():
     except AttributeError:
         print("Login filed!")
     else:
-        print("姓名: " + str(username))
+        print("\n姓名: " + str(username))
         print("账户类型: " + str(accountType))
         print("每月免费10GB流量，已使用: " + str(dataLeft[0][0]))
         print("\033[32m每月免费10GB流量，剩余: " + str(dataLeft[1][0]) + "\033[0m")
@@ -98,4 +109,5 @@ def main():
 
 
 if __name__ == "__main__":
+    print("✔流量查询实用工具")
     main()
